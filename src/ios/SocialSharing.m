@@ -97,7 +97,15 @@ static NSString *const kShareOptionUrl = @"url";
       for (NSString* filename in filenames) {
         NSObject *file = [self getImage:filename];
         if (file == nil) {
-          file = [self getFile:filename];
+            file = [self getFile:filename];
+        } else {
+            NSString *docsPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory,
+                                                                         NSUserDomainMask,
+                                                                         YES) lastObject];
+            NSString *imagePath = [docsPath stringByAppendingPathComponent:@"shareimage.png"];
+            NSURL *imageUrl     = [NSURL fileURLWithPath:imagePath];
+               [UIImagePNGRepresentation((UIImage*)file) writeToURL:imageUrl atomically:YES];
+            file = imageUrl;
         }
         if (file != nil) {
           [files addObject:file];
